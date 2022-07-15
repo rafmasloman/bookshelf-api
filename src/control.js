@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable consistent-return */
 const uuid = require('uuid');
 const books = require('./books');
 
@@ -64,7 +66,7 @@ const addBook = (req, res) => {
         res,
         'fail',
         'Gagal menambahkan buku. Mohon isi nama buku',
-        400
+        400,
       );
     }
 
@@ -73,15 +75,13 @@ const addBook = (req, res) => {
         res,
         'fail',
         'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
-        400
+        400,
       );
     }
 
     books.push(newBooks);
 
-    const checkId = (book) => {
-      return book.id === id;
-    };
+    const checkId = (book) => book.id === id;
 
     const bookId = books.filter(checkId);
 
@@ -94,7 +94,7 @@ const addBook = (req, res) => {
       'success',
       'Buku berhasil ditambahkan',
       201,
-      data
+      data,
     );
   } catch (error) {
     return handlingResponse(res, 'error', 'Buku gagal ditambahkan', 500);
@@ -103,60 +103,56 @@ const addBook = (req, res) => {
 
 const getAllBook = (req, res) => {
   try {
-    const {name, reading, finished} = req.query;
+    const { name, reading, finished } = req.query;
 
     let data = {
-      books: books.map((book) => (
-        {
-  
-          id : book.id,
-          name : book.name,
-          publisher : book.publisher
-          
-        }
-      )),
+      books: books.map((book) => ({
+        id: book.id,
+        name: book.name,
+        publisher: book.publisher,
+      })),
     };
 
     if (books.length >= 1) {
-      if(name) {
-        const getBookByName = books.filter(book => {
-          return book.name === name
-        })
-  
+      if (name) {
+        const getBookByName = books.filter((book) => book.name === name);
+
         data = {
-          books: getBookByName.map(book => ({
+          books: getBookByName.map((book) => ({
             id: book.id,
-            name: book.name
-          }))
-        }
-  
+            name: book.name,
+          })),
+        };
+
         return handlingResponse(res, 'success', null, 200, data);
       }
-  
-      if(reading) {
-        const getBookByReading = books.filter(book => Number(reading) === Number(book.reading))
-  
+
+      if (reading) {
+        const getBookByReading = books.filter(
+          (book) => Number(reading) === Number(book.reading),
+        );
+
         data = {
-          books: getBookByReading.map(book => ({
+          books: getBookByReading.map((book) => ({
             id: book.id,
             name: book.name,
-            reading: book.reading
-          }))
-        }
-  
+            reading: book.reading,
+          })),
+        };
       }
-  
-      if(finished) {
-        const getBookByFinished = books.filter(book => Number(finished) === Number(book.finished))
-  
+
+      if (finished) {
+        const getBookByFinished = books.filter(
+          (book) => Number(finished) === Number(book.finished),
+        );
+
         data = {
-          books: getBookByFinished.map(book => ({
+          books: getBookByFinished.map((book) => ({
             id: book.id,
             name: book.name,
-            finished: book.finished
-          }))
-        }
-  
+            finished: book.finished,
+          })),
+        };
       }
 
       return handlingResponse(res, 'success', null, 200, data);
@@ -165,7 +161,6 @@ const getAllBook = (req, res) => {
     if (books.length < 1) {
       return handlingResponse(res, 'success', null, 200, data);
     }
-
   } catch (error) {
     return handlingResponse(res, 'error', error, 500);
   }
@@ -175,9 +170,7 @@ const getBookById = (req, res) => {
   try {
     const { id } = req.params;
 
-    const checkId = books.filter((book) => {
-      return book.id === id;
-    });
+    const checkId = books.filter((book) => book.id === id);
 
     console.log(typeof checkId[0].id);
     console.log(id);
@@ -195,31 +188,42 @@ const getBookById = (req, res) => {
   }
 };
 
-
 const updateBook = (req, res) => {
   try {
-    const {id} = req.params
+    const { id } = req.params;
 
-    const {name,year, author, summary, publisher, pageCount, readPage, reading} = req.payload
-    const updateAt = new Date().toISOString()
-  
-    const checkId = books.findIndex((book) => {
-      return book.id === id;
-    });
-  
-    if(!name) {
-      return handlingResponse(res, 'fail', 'Gagal memperbarui buku. Mohon isi nama buku', 400)
+    const {
+      name,
+      year,
+      author,
+      summary,
+      publisher,
+      pageCount,
+      readPage,
+      reading,
+    } = req.payload;
+    const updateAt = new Date().toISOString();
+
+    const checkId = books.findIndex((book) => book.id === id);
+
+    if (!name) {
+      return handlingResponse(
+        res,
+        'fail',
+        'Gagal memperbarui buku. Mohon isi nama buku',
+        400,
+      );
     }
-  
+
     if (pageCount <= readPage) {
       return handlingResponse(
         res,
         'fail',
         'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
-        400
+        400,
       );
     }
-  
+
     books[checkId] = {
       ...books[checkId],
       name,
@@ -230,32 +234,37 @@ const updateBook = (req, res) => {
       pageCount,
       readPage,
       reading,
-      updateAt
-    }
-  
-    return handlingResponse(res, 'success', 'Buku berhasil diperbarui', 200)
+      updateAt,
+    };
+
+    return handlingResponse(res, 'success', 'Buku berhasil diperbarui', 200);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-
-}
-
-const deleteBookById = (req, res) => {
-  const {id} = req.params
-
-  
-
-  const checkId = books.findIndex((book) => {
-    return book.id === id;
-  });
-
-  if(checkId !== -1) {
-    books.splice(checkId, 1);
-    return handlingResponse(res, 'success', 'Catatan berhasil dihapus', 200)
-  }
-
-  return handlingResponse(res, 'fail', 'Catatan gagal dihapus. Id tidak ditemukan', 404)
-
 };
 
-module.exports = { addBook, getAllBook, getBookById, deleteBookById, updateBook };
+const deleteBookById = (req, res) => {
+  const { id } = req.params;
+
+  const checkId = books.findIndex((book) => book.id === id);
+
+  if (checkId !== -1) {
+    books.splice(checkId, 1);
+    return handlingResponse(res, 'success', 'Catatan berhasil dihapus', 200);
+  }
+
+  return handlingResponse(
+    res,
+    'fail',
+    'Catatan gagal dihapus. Id tidak ditemukan',
+    404,
+  );
+};
+
+module.exports = {
+  addBook,
+  getAllBook,
+  getBookById,
+  deleteBookById,
+  updateBook,
+};
