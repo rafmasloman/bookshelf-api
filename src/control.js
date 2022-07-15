@@ -103,36 +103,69 @@ const addBook = (req, res) => {
 
 const getAllBook = (req, res) => {
   try {
-    const newBook = [];
-    const {name} = req.query;
-    
-    
+    const {name, reading, finished} = req.query;
 
-    books.map((book) => {
-      const bookData = {};
-
-      bookData.id = book.id;
-      bookData.name = book.name;
-      bookData.publisher = book.publisher;
-
-      newBook.push(bookData);
-    });
-
-    const data = {
-      books: newBook,
+    let data = {
+      books: books.map((book) => (
+        {
+  
+          id : book.id,
+          name : book.name,
+          publisher : book.publisher
+          
+        }
+      )),
     };
 
-    const getName = data.books.filter(book => {
-      return book.name === name
-    })
-
     if (books.length >= 1) {
+      if(name) {
+        const getBookByName = books.filter(book => {
+          return book.name === name
+        })
+  
+        data = {
+          books: getBookByName.map(book => ({
+            id: book.id,
+            name: book.name
+          }))
+        }
+  
+        return handlingResponse(res, 'success', null, 200, data);
+      }
+  
+      if(reading) {
+        const getBookByReading = books.filter(book => Number(reading) === Number(book.reading))
+  
+        data = {
+          books: getBookByReading.map(book => ({
+            id: book.id,
+            name: book.name,
+            reading: book.reading
+          }))
+        }
+  
+      }
+  
+      if(finished) {
+        const getBookByFinished = books.filter(book => Number(finished) === Number(book.finished))
+  
+        data = {
+          books: getBookByFinished.map(book => ({
+            id: book.id,
+            name: book.name,
+            finished: book.finished
+          }))
+        }
+  
+      }
+
       return handlingResponse(res, 'success', null, 200, data);
     }
 
     if (books.length < 1) {
       return handlingResponse(res, 'success', null, 200, data);
     }
+
   } catch (error) {
     return handlingResponse(res, 'error', error, 500);
   }
