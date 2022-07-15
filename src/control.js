@@ -104,6 +104,9 @@ const addBook = (req, res) => {
 const getAllBook = (req, res) => {
   try {
     const newBook = [];
+    const {name} = req.query;
+    
+    
 
     books.map((book) => {
       const bookData = {};
@@ -118,6 +121,10 @@ const getAllBook = (req, res) => {
     const data = {
       books: newBook,
     };
+
+    const getName = data.books.filter(book => {
+      return book.name === name
+    })
 
     if (books.length >= 1) {
       return handlingResponse(res, 'success', null, 200, data);
@@ -155,14 +162,67 @@ const getBookById = (req, res) => {
   }
 };
 
+
+const updateBook = (req, res) => {
+  try {
+    const {id} = req.params
+
+    const {name,year, author, summary, publisher, pageCount, readPage, reading} = req.payload
+    const updateAt = new Date().toISOString()
+  
+    const checkId = books.findIndex((book) => {
+      return book.id === id;
+    });
+  
+    if(!name) {
+      return handlingResponse(res, 'fail', 'Gagal memperbarui buku. Mohon isi nama buku', 400)
+    }
+  
+    if (pageCount <= readPage) {
+      return handlingResponse(
+        res,
+        'fail',
+        'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
+        400
+      );
+    }
+  
+    books[checkId] = {
+      ...books[checkId],
+      name,
+      year,
+      author,
+      summary,
+      publisher,
+      pageCount,
+      readPage,
+      reading,
+      updateAt
+    }
+  
+    return handlingResponse(res, 'success', 'Buku berhasil diperbarui', 200)
+  } catch (error) {
+    console.log(error)
+  }
+
+}
+
 const deleteBookById = (req, res) => {
-  const checkId = books.filter((book) => {
+  const {id} = req.params
+
+  
+
+  const checkId = books.findIndex((book) => {
     return book.id === id;
   });
 
-  if (checkId[0].id === id) {
-    return handlingResponse(res, 'success', 'Buku berhasil dihapus', 200);
+  if(checkId !== -1) {
+    books.splice(checkId, 1);
+    return handlingResponse(res, 'success', 'Catatan berhasil dihapus', 200)
   }
+
+  return handlingResponse(res, 'fail', 'Catatan gagal dihapus. Id tidak ditemukan', 404)
+
 };
 
-module.exports = { addBook, getAllBook, getBookById, deleteBookById };
+module.exports = { addBook, getAllBook, getBookById, deleteBookById, updateBook };

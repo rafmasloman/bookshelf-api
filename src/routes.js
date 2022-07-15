@@ -3,6 +3,7 @@ const {
   getAllBook,
   getBookById,
   deleteBookById,
+  updateBook
 } = require('./control');
 
 const routes = [
@@ -26,6 +27,11 @@ const routes = [
     path: '/books/{id}',
     handler: deleteBookById,
   },
+  {
+    method: 'PUT',
+    path: '/books/{id}',
+    handler: updateBook,
+  }
 ];
 
 module.exports = routes;
