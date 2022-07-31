@@ -115,7 +115,9 @@ const getAllBook = (req, res) => {
 
     if (books.length >= 1) {
       if (name) {
-        const getBookByName = books.filter((book) => book.name === name);
+        const getBookByName = books.filter((book) =>
+          book.name.toLowerCase().includes(name.toLowerCase()),
+        );
 
         data = {
           books: getBookByName.map((book) => ({
