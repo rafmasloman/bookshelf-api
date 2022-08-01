@@ -1,3 +1,5 @@
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable function-paren-newline */
 /* eslint-disable no-console */
 /* eslint-disable consistent-return */
 const uuid = require('uuid');
@@ -66,7 +68,7 @@ const addBook = (req, res) => {
         res,
         'fail',
         'Gagal menambahkan buku. Mohon isi nama buku',
-        400
+        400,
       );
     }
 
@@ -75,7 +77,7 @@ const addBook = (req, res) => {
         res,
         'fail',
         'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
-        400
+        400,
       );
     }
 
@@ -94,7 +96,7 @@ const addBook = (req, res) => {
       'success',
       'Buku berhasil ditambahkan',
       201,
-      data
+      data,
     );
   } catch (error) {
     return handlingResponse(res, 'error', 'Buku gagal ditambahkan', 500);
@@ -116,7 +118,7 @@ const getAllBook = (req, res) => {
     if (books.length >= 1) {
       if (name) {
         const getBookByName = books.filter((book) =>
-          book.name.toLowerCase().includes(name.toLowerCase())
+          book.name.toLowerCase().includes(name.toLowerCase()),
         );
 
         data = {
@@ -132,7 +134,7 @@ const getAllBook = (req, res) => {
 
       if (reading) {
         const getBookByReading = books.filter(
-          (book) => Number(reading) === Number(book.reading)
+          (book) => Number(reading) === Number(book.reading),
         );
 
         data = {
@@ -146,7 +148,7 @@ const getAllBook = (req, res) => {
 
       if (finished) {
         const getBookByFinished = books.filter(
-          (book) => Number(finished) === Number(book.finished)
+          (book) => Number(finished) === Number(book.finished),
         );
 
         data = {
@@ -214,7 +216,7 @@ const updateBook = (req, res) => {
         res,
         'fail',
         'Gagal memperbarui buku. Mohon isi nama buku',
-        400
+        400,
       );
     }
 
@@ -223,7 +225,7 @@ const updateBook = (req, res) => {
         res,
         'fail',
         'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
-        400
+        400,
       );
     }
 
@@ -263,7 +265,7 @@ const deleteBookById = (req, res) => {
     res,
     'fail',
     'Buku gagal dihapus. Id tidak ditemukan',
-    404
+    404,
   );
 };
 
