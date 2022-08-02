@@ -245,7 +245,12 @@ const updateBook = (req, res) => {
       };
       return handlingResponse(res, 'success', 'Buku berhasil diperbarui', 200);
     }
-    return handlingResponse(res, 'failed', 'Buku gagal diperbarui', 404);
+    return handlingResponse(
+      res,
+      'fail',
+      'Gagal memperbarui buku. Id tidak ditemukan',
+      404,
+    );
   } catch (error) {
     console.log(error);
   }
